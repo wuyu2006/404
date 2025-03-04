@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - 页面正在开发中</title>
+  <style>
+    /* 全局样式重置 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+    }
+    /* canvas 全屏背景 */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    /* 居中容器 */
+    .container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+    /* 内容块，带有半透明背景 */
+    .content {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    }
+    h1 {
+      font-size: 6rem;
+      margin-bottom: 20px;
+      color: #ff6b6b;
+    }
+    p {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      color: #333;
+    }
+    a {
+      text-decoration: none;
+      color: #fff;
+      background-color: #ff6b6b;
+      padding: 10px 20px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    a:hover {
+      background-color: #ff4c4c;
+    }
+    /* 针对手机等小屏设备的适配 */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 4rem;
+      }
+      p {
+        font-size: 1.2rem;
+      }
+      .content {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 动态粒子背景 -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- 居中内容 -->
+  <div class="container">
+    <div class="content">
+      <h1>404</h1>
+      <p>抱歉，您访问的页面暂时还在开发中，敬请期待</p>
+      <a href="/">返回导航页</a>
+    </div>
+  </div>
+
+  <script>
+    // 获取 canvas 对象与绘图上下文
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 设置 canvas 大小
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particlesArray = [];
+    const numberOfParticles = 100; // 粒子数量
+
+    // 定义粒子类
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1; // 粒子尺寸
+        this.speedX = Math.random() * 1 - 0.5;
+        this.speedY = Math.random() * 1 - 0.5;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        // 当粒子移出屏幕边界时，从另一边出现
+        if (this.x > canvas.width) this.x = 0;
+        if (this.x < 0) this.x = canvas.width;
+        if (this.y > canvas.height) this.y = 0;
+        if (this.y < 0) this.y = canvas.height;
+      }
+      draw() {
+        ctx.fillStyle = 'rgba(255,107,107,0.7)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // 初始化粒子数组
+    function init() {
+      particlesArray = [];
+      for (let i = 0; i < numberOfParticles; i++) {
+        particlesArray.push(new Particle());
+      }
+    }
+    init();
+
+    // 动画循环
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let particle of particlesArray) {
+        particle.update();
+        particle.draw();
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // 监听窗口尺寸变化，实时调整 canvas 大小
+    window.addEventListener('resize', function() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      init();
+    });
+  </script>
+</body>
+</html>
